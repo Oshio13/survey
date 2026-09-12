@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 SMTP_SERVER = os.getenv("SMTP_SERVER")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "465"))
+SMTP_TIMEOUT = int(os.getenv("SMTP_TIMEOUT", "15"))
 
 # This is the Gmail account used to send emails.
 SENDER_EMAIL = os.getenv("SENDER_EMAIL")
@@ -35,7 +36,7 @@ def send_feedback(data):
     msg.add_alternative(html_body, subtype="html")
 
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT, context=context) as server:
+    with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT, context=context, timeout=SMTP_TIMEOUT) as server:
         server.login(SENDER_EMAIL, APP_PASSWORD)
         server.send_message(msg)
 
