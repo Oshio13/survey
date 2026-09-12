@@ -3,12 +3,15 @@ import smtplib
 import ssl
 from email.message import EmailMessage
 
+from dotenv import load_dotenv
 from flask import Flask, render_template, request
+
+load_dotenv()
 
 app = Flask(__name__)
 
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 465
+SMTP_SERVER = os.getenv("SMTP_SERVER")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "465"))
 
 # This is the Gmail account used to send emails.
 SENDER_EMAIL = os.getenv("SENDER_EMAIL")
@@ -18,7 +21,7 @@ APP_PASSWORD = os.getenv("APP_PASSWORD")
 RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL")
 
 def send_feedback(data):
-    if not all([SENDER_EMAIL, APP_PASSWORD, RECEIVER_EMAIL]):
+    if not all([SMTP_SERVER, SENDER_EMAIL, APP_PASSWORD, RECEIVER_EMAIL]):
         raise RuntimeError("Email settings are not configured")
 
     msg = EmailMessage()
@@ -80,4 +83,4 @@ def index():
     return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

@@ -141,7 +141,18 @@
             flex-wrap: wrap;
         }
 
+        .rating-app {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         .star {
+            width: auto;
+            padding: 0;
+            border: none;
+            background: transparent;
             font-size: clamp(1.8rem, 4vw, 2.3rem);
             line-height: 1;
             color: var(--star-off);
@@ -161,6 +172,50 @@
             font-weight: 700;
             color: var(--primary-dark);
             margin-left: 4px;
+        }
+
+        .form-assistant {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 20px 0 4px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fbfdfb;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 7px;
+            min-width: 100px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #e1ece5;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: inherit;
+            background: var(--primary);
+            transition: width 0.25s ease;
+        }
+
+        .character-count {
+            align-self: flex-end;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .submit-status {
+            margin-top: 10px;
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+            text-align: center;
         }
 
         .row {
@@ -246,6 +301,12 @@
                 width: 100%;
             }
 
+            .form-assistant {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 8px;
+            }
+
             button[type="submit"] {
                 width: 100%;
                 padding: 14px 16px;
@@ -273,6 +334,8 @@
         {% if error %}
             <div class="error">{{ error }}</div>
         {% endif %}
+
+        <div id="formAssistant"></div>
 
         <form method="POST" id="surveyForm">
             <div class="section">
@@ -313,13 +376,8 @@
                 <div class="field">
                     <label>Overall Satisfaction</label>
                     <div class="rating-box">
-                        <span class="star" data-value="1">★</span>
-                        <span class="star" data-value="2">★</span>
-                        <span class="star" data-value="3">★</span>
-                        <span class="star" data-value="4">★</span>
-                        <span class="star" data-value="5">★</span>
+                        <div id="ratingApp" class="rating-app"></div>
                         <input type="hidden" id="rating" name="rating" value="">
-                        <span class="rating-text" id="ratingText">Rate us</span>
                     </div>
                 </div>
 
@@ -412,48 +470,115 @@
 
                 <div class="field">
                     <label for="message">Comments / Suggestions</label>
-                    <textarea id="message" name="message" placeholder="Tell us what we are doing well and what we can improve..." required></textarea>
+                    <textarea id="message" name="message" maxlength="500" placeholder="Tell us what we are doing well and what we can improve..." required></textarea>
+                    <div id="characterCount" class="character-count">0 / 500</div>
                 </div>
             </div>
 
             <button type="submit">Submit Feedback</button>
+            <div id="submitStatus" class="submit-status" role="status" aria-live="polite"></div>
         </form>
     </div>
 
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script>
-        const stars = document.querySelectorAll('.star');
-        const ratingInput = document.getElementById('rating');
-        const ratingText = document.getElementById('ratingText');
+        const { useEffect, useState } = React;
+        const { createRoot } = ReactDOM;
 
-        const ratingLabels = {
-            1: 'Very Poor',
-            2: 'Poor',
-            3: 'Average',
-            4: 'Good',
-            5: 'Excellent'
-        };
+        const ratingLabels = ['Very Poor', 'Poor', 'Average', 'Good', 'Excellent'];
 
-        stars.forEach(star => {
-            star.addEventListener('click', function () {
-                const value = Number(this.getAttribute('data-value'));
-                ratingInput.value = value;
-                ratingText.textContent = ratingLabels[value];
+        function RatingApp() {
+            const [rating, setRating] = useState(0);
+            const ratingInput = document.getElementById('rating');
 
-                stars.forEach(item => {
-                    item.classList.toggle('active', Number(item.getAttribute('data-value')) <= value);
-                });
-            });
+            useEffect(() => {
+                ratingInput.value = rating || '';
+            }, [rating]);
+
+            return React.createElement(
+                React.Fragment,
+                null,
+                [1, 2, 3, 4, 5].map(value => React.createElement(
+                    'button',
+                    {
+                        key: value,
+                        type: 'button',
+                        className: `star ${value <= rating ? 'active' : ''}`,
+                        onClick: () => setRating(value),
+                        'aria-label': `${value} out of 5 stars`,
+                        'aria-pressed': value === rating
+                    },
+                    '★'
+                )),
+                React.createElement(
+                    'span',
+                    { className: 'rating-text' },
+                    rating ? ratingLabels[rating - 1] : 'Rate us'
+                )
+            );
+        }
+
+        function FormAssistant() {
+            const [completed, setCompleted] = useState(0);
+            const [characters, setCharacters] = useState(0);
+            const requiredFields = ['name', 'email', 'rating', 'food_quality', 'meal_variety', 'timeliness', 'cleanliness', 'staff_service', 'temperature', 'recommend', 'message'];
+
+            useEffect(() => {
+                const form = document.getElementById('surveyForm');
+                const message = document.getElementById('message');
+                const update = () => {
+                    const complete = requiredFields.filter(name => {
+                        if (name === 'recommend') return form.querySelector('input[name="recommend"]:checked');
+                        return form.elements[name]?.value.trim();
+                    }).length;
+                    setCompleted(Math.round((complete / requiredFields.length) * 100));
+                    setCharacters(message.value.length);
+                };
+
+                form.addEventListener('input', update);
+                form.addEventListener('change', update);
+                update();
+                return () => {
+                    form.removeEventListener('input', update);
+                    form.removeEventListener('change', update);
+                };
+            }, []);
+
+            return React.createElement(
+                'div',
+                { className: 'form-assistant' },
+                React.createElement('span', null, `${completed}% complete`),
+                React.createElement('div', { className: 'progress-track', 'aria-label': `${completed}% of required fields complete` },
+                    React.createElement('div', { className: 'progress-bar', style: { width: `${completed}%` } })
+                ),
+                React.createElement('span', null, `${characters} / 500 characters`)
+            );
+        }
+
+        createRoot(document.getElementById('ratingApp')).render(React.createElement(RatingApp));
+        createRoot(document.getElementById('formAssistant')).render(React.createElement(FormAssistant));
+
+        document.getElementById('message').addEventListener('input', event => {
+            document.getElementById('characterCount').textContent = `${event.target.value.length} / 500`;
         });
 
-        document.getElementById('surveyForm').addEventListener('submit', function (event) {
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const message = document.getElementById('message').value.trim();
+        document.getElementById('surveyForm').addEventListener('submit', event => {
+            const form = event.currentTarget;
+            const required = ['name', 'email', 'rating', 'food_quality', 'meal_variety', 'timeliness', 'cleanliness', 'staff_service', 'temperature', 'message'];
+            const missing = required.some(name => !form.elements[name]?.value.trim());
+            const recommendationMissing = !form.querySelector('input[name="recommend"]:checked');
 
-            if (!name || !email || !message) {
+            if (missing || recommendationMissing) {
                 event.preventDefault();
-                alert('Please complete all required fields before submitting.');
+                document.getElementById('submitStatus').textContent = 'Please complete the highlighted required fields before submitting.';
+                return;
             }
+
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending feedback...';
+            document.getElementById('submitStatus').textContent = 'Sending your feedback securely.';
         });
     </script>
 </body>

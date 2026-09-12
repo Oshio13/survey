@@ -33,9 +33,9 @@ APP_PASSWORD=your-gmail-app-password
 RECEIVER_EMAIL=your-recipient@example.com
 ```
 
-The application reads these values from environment variables. Never commit `.env` or share your Gmail app password.
+The application loads these values from `.env` when it starts. Never commit `.env` or share your Gmail app password.
 
-PowerShell does not automatically load `.env` files. Set the variables in the active terminal before starting the app:
+Alternatively, set the variables in the active PowerShell terminal before starting the app:
 
 ```powershell
 $env:SENDER_EMAIL = "your-sender@gmail.com"
