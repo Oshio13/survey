@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chesroc Survey Feedback</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #eef5f1;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #1f2d25;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 760px;
+            margin: 32px auto;
+            background: #ffffff;
+            border: 1px solid #dfeae3;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1f7a4d 0%, #145a36 100%);
+            padding: 28px 32px;
+            text-align: center;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 16px auto;
+            width: auto;
+            max-width: 220px;
+            background: #fff;
+            padding: 10px 18px;
+            border-radius: 10px;
+        }
+
+        .title {
+            margin: 0;
+            color: #ffffff;
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .subtitle {
+            margin: 8px 0 0 0;
+            color: rgba(255,255,255,0.85);
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px 32px 18px;
+        }
+
+        .info-grid {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .label, .value {
+            display: table-cell;
+            padding: 12px 0;
+            border-bottom: 1px solid #edf1ee;
+            vertical-align: top;
+        }
+
+        .label {
+            width: 190px;
+            color: #173d2d;
+            font-weight: 700;
+            padding-right: 12px;
+        }
+
+        .value {
+            color: #2f463f;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .footer {
+            padding: 18px 32px 28px;
+            text-align: center;
+            color: #5d7066;
+            font-size: 12px;
+            background: #f9fbfa;
+        }
+
+        @media (max-width: 620px) {
+            .container {
+                margin: 16px;
+            }
+
+            .header {
+                padding: 22px 20px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 20px 20px 10px;
+            }
+
+            .label, .value {
+                display: block;
+                width: 100%;
+                border-bottom: none;
+                padding: 8px 0;
+            }
+
+            .row {
+                display: block;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #edf1ee;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img
+                class="logo"
+                src="http://www.chesroc.com/assets/img/chesroc-logo.svg"
+                alt="Chesroc Catering Services Logo"
+            >
+            <h2 class="title">Stubbcreek Survey Feedback</h2>
+            <p class="subtitle">Customer catering service feedback summary</p>
+        </div>
+
+        <div class="content">
+            <div class="info-grid">
+                <div class="row">
+                    <div class="label">Name:</div>
+                    <div class="value">{{ name }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Department:</div>
+                    <div class="value">{{ department or 'Not provided' }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Email:</div>
+                    <div class="value">{{ email }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Meal Type:</div>
+                    <div class="value">{{ meal_type or 'Not provided' }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Overall Rating:</div>
+                    <div class="value">{{ rating }}/5</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Food Quality:</div>
+                    <div class="value">{{ food_quality }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Meal Variety:</div>
+                    <div class="value">{{ meal_variety }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Timeliness:</div>
+                    <div class="value">{{ timeliness }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Cleanliness:</div>
+                    <div class="value">{{ cleanliness }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Staff Service:</div>
+                    <div class="value">{{ staff_service }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Meal Temperature:</div>
+                    <div class="value">{{ temperature }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Recommendation:</div>
+                    <div class="value">{{ recommend }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">Comments:</div>
+                    <div class="value">{{ message }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Survey feedback submitted via Chesroc Catering Services Survey.
+        </div>
+    </div>
+</body>
+</html>
