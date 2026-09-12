@@ -1,4 +1,6 @@
 import os
+import base64
+from pathlib import Path
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
@@ -17,13 +19,20 @@ def send_feedback(data):
         raise RuntimeError("Email settings are not configured")
 
     html_body = render_template("email_feedback.html", **data)
+    logo_path = Path(__file__).parent / "templates" / "chesroc-logo.svg"
     resend.api_key = RESEND_API_KEY
     resend.Emails.send({
         "from": SENDER_EMAIL,
         "to": [RECEIVER_EMAIL],
         "subject": f"New survey feedback from {data['name']}",
         "reply_to": data["email"],
-        "html": html_body
+        "html": html_body,
+        "attachments": [{
+            "filename": "chesroc-logo.svg",
+            "content": base64.b64encode(logo_path.read_bytes()).decode("ascii"),
+            "content_type": "image/svg+xml",
+            "content_id": "chesroc-logo"
+        }]
     })
 
 @app.route("/", methods=["GET", "POST"])
