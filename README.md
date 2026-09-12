@@ -5,8 +5,7 @@ A Flask web app for collecting survey feedback and sending submitted responses b
 ## Requirements
 
 - Python 3.12 or later
-- A Gmail account with 2-Step Verification enabled
-- A Gmail app password for sending email
+- A Resend account and API key for sending email
 
 ## Setup
 
@@ -28,18 +27,18 @@ python -m pip install -r requirements.txt
 Copy `.env.example` to `.env` and replace the placeholder values:
 
 ```text
-SENDER_EMAIL=your-sender@gmail.com
-APP_PASSWORD=your-gmail-app-password
+RESEND_API_KEY=your-resend-api-key
+SENDER_EMAIL=onboarding@resend.dev
 RECEIVER_EMAIL=your-recipient@example.com
 ```
 
-The application loads these values from `.env` when it starts. Never commit `.env` or share your Gmail app password.
+The application loads these values from `.env` when it starts. Never commit `.env` or share your Resend API key. For production, verify your own sending domain in Resend and use an address from that domain as `SENDER_EMAIL`.
 
 Alternatively, set the variables in the active PowerShell terminal before starting the app:
 
 ```powershell
-$env:SENDER_EMAIL = "your-sender@gmail.com"
-$env:APP_PASSWORD = "your-gmail-app-password"
+$env:RESEND_API_KEY = "your-resend-api-key"
+$env:SENDER_EMAIL = "onboarding@resend.dev"
 $env:RECEIVER_EMAIL = "your-recipient@example.com"
 ```
 

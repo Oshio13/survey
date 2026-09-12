@@ -1,44 +1,30 @@
 import os
-import smtplib
-import ssl
-from email.message import EmailMessage
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
+import resend
 
 load_dotenv()
 
 app = Flask(__name__)
 
-SMTP_SERVER = os.getenv("SMTP_SERVER")
-SMTP_PORT = int(os.getenv("SMTP_PORT", "465"))
-SMTP_TIMEOUT = int(os.getenv("SMTP_TIMEOUT", "15"))
-
-# This is the Gmail account used to send emails.
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 SENDER_EMAIL = os.getenv("SENDER_EMAIL")
-APP_PASSWORD = os.getenv("APP_PASSWORD")
-
-# This is where the survey results are sent.
 RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL")
 
 def send_feedback(data):
-    if not all([SMTP_SERVER, SENDER_EMAIL, APP_PASSWORD, RECEIVER_EMAIL]):
+    if not all([RESEND_API_KEY, SENDER_EMAIL, RECEIVER_EMAIL]):
         raise RuntimeError("Email settings are not configured")
 
-    msg = EmailMessage()
-    msg["Subject"] = f"New survey feedback from {data['name']}"
-    msg["From"] = SENDER_EMAIL
-    msg["To"] = RECEIVER_EMAIL
-    msg["Reply-To"] = data["email"]
-
     html_body = render_template("email_feedback.html", **data)
-    msg.set_content("This email requires HTML support.")
-    msg.add_alternative(html_body, subtype="html")
-
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT, context=context, timeout=SMTP_TIMEOUT) as server:
-        server.login(SENDER_EMAIL, APP_PASSWORD)
-        server.send_message(msg)
+    resend.api_key = RESEND_API_KEY
+    resend.Emails.send({
+        "from": SENDER_EMAIL,
+        "to": [RECEIVER_EMAIL],
+        "subject": f"New survey feedback from {data['name']}",
+        "reply_to": data["email"],
+        "html": html_body
+    })
 
 @app.route("/", methods=["GET", "POST"])
 def index():
