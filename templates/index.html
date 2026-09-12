@@ -63,6 +63,12 @@
             filter: drop-shadow(0 4px 8px rgba(20, 90, 54, 0.12));
         }
 
+        .logo svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
         h1 {
             margin: 0;
             font-size: clamp(1.8rem, 4vw, 2.8rem);
@@ -318,7 +324,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-wrap">
-                <img class="logo" src="http://www.chesroc.com/assets/img/chesroc-logo.svg" alt="Chesroc Catering Services Logo">
+                <div class="logo" role="img" aria-label="Chesroc Catering Services Logo">{% include 'chesroc-logo.svg' %}</div>
             </div>
             <h1>Stubbcreek Survey</h1>
             <div class="subtitle">
