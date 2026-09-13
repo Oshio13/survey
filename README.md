@@ -2,6 +2,12 @@
 
 A Flask web app for collecting survey feedback and sending submitted responses by email.
 
+## Survey link
+
+Scan the QR code or open the [Chesroc Catering Services - Stubbcreek Survey](https://survey-31kp.onrender.com/).
+
+![QR code for the Stubbcreek Survey](survey-qr.svg)
+
 ## Requirements
 
 - Python 3.12 or later
