@@ -6,7 +6,7 @@ A Flask web app for collecting survey feedback and sending submitted responses b
 
 Scan the QR code or open the [Chesroc Catering Services - Stubbcreek Survey](https://survey-31kp.onrender.com/).
 
-![QR code for the Stubbcreek Survey](survey-qr.png)
+![QR code for the Stubbcreek Survey](docs/assets/survey-qr.png)
 
 ## Requirements
 
@@ -59,10 +59,12 @@ Open http://127.0.0.1:5000 in a browser.
 ## Project structure
 
 ```text
-app.py                 Flask application
-import smtplib.py      Standalone email example
+examples/smtp_email_example.py  Standalone email example
 templates/index.html   Survey form
 templates/email_feedback.html  HTML email template
+templates/assets/chesroc-logo.svg  Company logo asset
+docs/assets/survey-qr.png  PNG QR barcode
+docs/assets/survey-qr.svg  SVG QR barcode
 requirements.txt       Python dependencies
 .env.example           Environment variable template
 ```

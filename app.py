@@ -19,7 +19,7 @@ def send_feedback(data):
         raise RuntimeError("Email settings are not configured")
 
     html_body = render_template("email_feedback.html", **data)
-    logo_path = Path(__file__).parent / "templates" / "chesroc-logo.svg"
+    logo_path = Path(__file__).parent / "templates" / "assets" / "chesroc-logo.svg"
     resend.api_key = RESEND_API_KEY
     resend.Emails.send({
         "from": SENDER_EMAIL,
